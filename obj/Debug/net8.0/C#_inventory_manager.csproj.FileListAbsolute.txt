@@ -1,0 +1,14 @@
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\bin\Debug\net8.0\C#_inventory_manager.exe
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\bin\Debug\net8.0\C#_inventory_manager.deps.json
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\bin\Debug\net8.0\C#_inventory_manager.runtimeconfig.json
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\bin\Debug\net8.0\C#_inventory_manager.dll
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\bin\Debug\net8.0\C#_inventory_manager.pdb
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\obj\Debug\net8.0\C#_inventory_manager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\obj\Debug\net8.0\C#_inventory_manager.AssemblyInfoInputs.cache
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\obj\Debug\net8.0\C#_inventory_manager.AssemblyInfo.cs
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\obj\Debug\net8.0\C#_inventory_manager.csproj.CoreCompileInputs.cache
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\obj\Debug\net8.0\C#_inventory_manager.dll
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\obj\Debug\net8.0\refint\C#_inventory_manager.dll
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\obj\Debug\net8.0\C#_inventory_manager.pdb
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\obj\Debug\net8.0\C#_inventory_manager.genruntimeconfig.cache
+C:\Users\al_st\OneDrive\Desktop\College\BYU-Idaho\2024_Winter\CSE 310 - Applied Programming\module5-C#\C#_inventory_manager\obj\Debug\net8.0\ref\C#_inventory_manager.dll
