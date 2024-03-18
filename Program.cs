@@ -8,22 +8,23 @@ namespace inventory_manager
 {
     internal class Program
     {
+        // Holds Current Inventory
+        private static List<Item> inventory = [];
+        private readonly static string filename = "inventory.txt";
+
         // Runs basic setup for the program, checks if storage file exists
         // Parameters: None
         // Returns: void
         private static void Setup()
         {
-            string data_file = "inventory.txt";
-
-            if (!File.Exists(data_file))
+            if (!File.Exists(filename))
             {
                 try
                 {
-                    File.Create(data_file);
+                    File.Create(filename);
                 }
                 catch
                 {
-                    Console.WriteLine();
                     throw new Exception("Something went wrong. Aborting program...");
                 }
             }
@@ -40,9 +41,9 @@ namespace inventory_manager
             Console.WriteLine("#####                  Menu                  #####");
             Console.WriteLine("#####----------------------------------------#####");
             Console.WriteLine("##### [1] Update Inventory Quantity          #####");
-            Console.WriteLine("##### [2] Add a new part                     #####");
+            Console.WriteLine("##### [2] Add a New Item                     #####");
             Console.WriteLine("##### [3] Format Inventory Data Sheet        #####");
-            Console.WriteLine("##### [4] Lookup part via part number        #####");
+            Console.WriteLine("##### [4] Lookup Item via Item Number        #####");
             Console.WriteLine("##### [5] End Program                        #####");
             Console.WriteLine("#####----------------------------------------#####");
             Console.WriteLine("##################################################");
@@ -66,9 +67,44 @@ namespace inventory_manager
             }
         }
 
+        private static bool AddItem()
+        {
+            string number, desc, q;
+            Console.Write("Enter Item ID Number: ");
+            number = Console.ReadLine();
+
+            foreach (Item item in inventory)
+            {
+                if (item.PartNum == number)
+                {
+                    Console.WriteLine("Error! " + number + " already exists! Aborting operation...");
+                    return false;
+                }
+            }
+
+            Console.Write("Enter Item Description: ");
+            desc = Console.ReadLine();
+
+            Console.Write("Enter Item Quantity: ");
+            q = Console.ReadLine();
+
+            if (int.TryParse(q, out int q_val))
+            {
+                inventory.Add(new Item(number, desc, q_val));
+            }
+            else
+            {
+                Console.WriteLine("Error! Quantity must be an integer! Aborting operation...");
+                return false;
+            }
+
+            return true;
+        }
+
         // Main Function
         static void Main()
         {
+            // run setup
             try
             {
                 Setup();
@@ -78,30 +114,52 @@ namespace inventory_manager
                 return;
             }
 
+            // holds user menu selection
             int selection = 0;
 
+            // print intro display
             Console.WriteLine("##################################################");
             Console.WriteLine("##### Welcome to Inventory Management System #####");
             Console.WriteLine("##################################################");
             Console.WriteLine("Press Enter to continue...");
             Console.ReadLine();
 
+            // clear console for menu operations
             Console.Clear();
 
             while (selection != 5)
             {
                 selection = Menu();
+                Console.Clear();
                 switch(selection)
                 {
                     case 1:
                         break;
                     case 2:
+                        bool success = false;
+                        while (!success)
+                        {
+                            success = AddItem();
+                            if (!success)
+                            {
+                                Console.Write("\nDo you wish to try again? [y/n]: ");
+                                string response = Console.ReadLine();
+
+                                if (response == "n") success = true;
+                                else Console.WriteLine();
+                            }
+                        }
                         break;
                     case 3:
                         break;
                     case 4:
                         break;
                     case 5:
+                        foreach (Item item in inventory)
+                        {
+                            File.WriteAllText(filename, $"{item.PartNum} {item.Description} {item.Qty}");
+                        }
+                        Console.WriteLine("Program aborted.");
                         break;
                 }
             }
