@@ -19,29 +19,39 @@ namespace inventory_manager
         // Returns: void
         private static void Setup()
         {
+            // If inventory.txt doesn't exist, add inventory.txt to bin
             if (!File.Exists(filename))
             {
+                // Create new file and close
                 try
                 {
                     FileStream fs = File.Create(filename);
                     fs.Close();
                     return;
                 }
+                // Something went wrong during creation... (shouldn't happen)
                 catch
                 {
                     throw new Exception("Something went wrong. Aborting program...");
                 }
             }
-            else
+
+            // File already exists, then read the data
+            string data = File.ReadAllText(filename);
+            
+            // get individual lines
+            string[] lines = data.Split('\n');
+            
+            // iterate through each line and grab the data values
+            foreach (string line in lines)
             {
-                string data = File.ReadAllText(filename);
-                string[] lines = data.Split('\n');
-                foreach (string line in lines)
-                {
-                    if (line == "") continue;
-                    string[] values = line.Split('@');
-                    inventory.Add(new Item(values[0], values[1], int.Parse(values[2])));
-                }
+                // ignore blank lines
+                if (line == "") continue;
+
+                // allows users to include spaces in their descriptions (a '@' character in the
+                // description will still break it...)
+                string[] values = line.Split('@');
+                inventory.Add(new Item(values[0], values[1], int.Parse(values[2])));
             }
         }
 
@@ -82,14 +92,26 @@ namespace inventory_manager
             }
         }
 
+        // Updates the quantity of a user provided part, provides an error if part is not in
+        // inventory.
+        // Parameters: None
+        // Returns: bool, indicates if operation was successful or not
         private static bool UpdateQuantity()
         {
+            // Holds user inputs
             string number, new_qty_inp;
+
+            // Indicates if the item was found
             bool found = false;
+
+            // holds list index of where the part was at
             int index = 0;
+
+            // get user input for item number
             Console.Write("Enter Item ID Number: ");
             number = Console.ReadLine();
 
+            // search for number
             foreach (Item item in inventory)
             {
                 if (item.PartNum == number)
@@ -100,45 +122,61 @@ namespace inventory_manager
                 index++;
             }
 
+            // If not found, indicate unsuccessful search
             if (!found)
             {
                 Console.WriteLine("Item not in inventory!");
                 return false;
             }
 
+            // get quantity input
             Console.Write("Enter new item quantity: ");
             new_qty_inp = Console.ReadLine();
+
+            // update quantity if input was a valid integer
             if (int.TryParse(new_qty_inp, out int new_qty))
             {
                 inventory[index].Qty = new_qty;
                 return true;
             }
 
+            // Print error if invalid typing was given and abort
             Console.WriteLine("Error! Quantity must be an integer! Aborting operation...");
             return false;
         }
 
+        // Adds an item to the inventory
+        // Parameters: None
+        // Returns: bool, indicating if the operation was successful or not
         private static bool AddItem()
         {
+            // hold user inputs
             string number, desc, q;
+
+            // get id number
             Console.Write("Enter Item ID Number: ");
             number = Console.ReadLine();
 
+            // ensure duplicates don't exist
             foreach (Item item in inventory)
             {
                 if (item.PartNum == number)
                 {
-                    Console.WriteLine("Error! " + number + " already exists! Aborting operation...");
+                    Console.WriteLine("Error! " + number + " already exists! Aborting " +
+                        "operation...");
                     return false;
                 }
             }
 
+            // get description
             Console.Write("Enter Item Description: ");
             desc = Console.ReadLine();
 
+            // get quantity
             Console.Write("Enter Item Quantity: ");
             q = Console.ReadLine();
 
+            // ensure quantity was an integer
             if (int.TryParse(q, out int q_val))
             {
                 inventory.Add(new Item(number, desc, q_val));
@@ -152,14 +190,22 @@ namespace inventory_manager
             return true;
         }
 
+        // Look up an item in the inventory
+        // Parameters: None
+        // Returns: bool, indicating if the operation was successful or not
         private static bool LookupItem()
         {
+            // hold user input
             string number;
+
+            // get item id number
             Console.Write("Enter Item ID Number: ");
             number = Console.ReadLine();
 
+            // search for item in inventory
             foreach (Item item in inventory)
             {
+                // if found, print information and indicate success
                 if (item.PartNum == number)
                 {
                     Console.WriteLine("Item ID: " + item.PartNum);
@@ -171,16 +217,24 @@ namespace inventory_manager
                 }
             }
 
+            // if not found, print message
             Console.WriteLine("Item not found!");
             return false;
         }
 
+        // Helper function to check for successful execution of menu functions
+        // Parameters: Func<bool> func, a function that returns a boolean value
+        // Returns: void
         private static void CheckSuccess(Func<bool> func)
         {
+            // start with no success
             bool success = false;
             while (!success)
             {
+                // run passed in function
                 success = func();
+
+                // if it was not successful, prompt user if they would like to try again or abort
                 if (!success)
                 {
                     Console.Write("\nDo you wish to try again? [y/n]: ");
@@ -218,10 +272,13 @@ namespace inventory_manager
             // clear console for menu operations
             Console.Clear();
 
+            // run main loop (menu loop) while exit selection is not given
             while (selection != 4)
             {
                 selection = Menu();
                 Console.Clear();
+
+                // determine which function to run based on user input
                 switch(selection)
                 {
                     case 1:
@@ -234,14 +291,20 @@ namespace inventory_manager
                         CheckSuccess(LookupItem);
                         break;
                     case 4:
+                        // truncate inventory file
                         using (FileStream fs = File.Open(filename, FileMode.Truncate))
                         {
                             fs.Close();
                         }
+
+                        // write inventory list to file
                         foreach (Item item in inventory)
                         {
-                            File.AppendAllText(filename, $"{item.PartNum}@{item.Description}@{item.Qty}\n");
+                            File.AppendAllText(filename,
+                                $"{item.PartNum}@{item.Description}@{item.Qty}\n");
                         }
+
+                        // write confirming message to console
                         Console.WriteLine("Program aborted.");
                         break;
                 }
