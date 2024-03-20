@@ -37,6 +37,7 @@ namespace inventory_manager
         {
             string userInp;
 
+            Console.Clear();
             Console.WriteLine("##################################################");
             Console.WriteLine("#####                  Menu                  #####");
             Console.WriteLine("#####----------------------------------------#####");
@@ -65,6 +66,42 @@ namespace inventory_manager
                     Console.WriteLine("Error! Input must be an integer!\n");
                 }
             }
+        }
+
+        private static bool UpdateQuantity()
+        {
+            string number, new_qty_inp;
+            bool found = false;
+            int index = 0;
+            Console.Write("Enter Item ID Number: ");
+            number = Console.ReadLine();
+
+            foreach (Item item in inventory)
+            {
+                if (item.PartNum == number)
+                {
+                    found = true;
+                    break;
+                }
+                index++;
+            }
+
+            if (!found)
+            {
+                Console.WriteLine("Item not in inventory!");
+                return false;
+            }
+
+            Console.Write("Enter new item quantity: ");
+            new_qty_inp = Console.ReadLine();
+            if (int.TryParse(new_qty_inp, out int new_qty))
+            {
+                inventory[index].Qty = new_qty;
+                return true;
+            }
+
+            Console.WriteLine("Error! Quantity must be an integer! Aborting operation...");
+            return false;
         }
 
         private static bool AddItem()
@@ -101,6 +138,23 @@ namespace inventory_manager
             return true;
         }
 
+        private static void CheckSuccess(Func<bool> func)
+        {
+            bool success = false;
+            while (!success)
+            {
+                success = func();
+                if (!success)
+                {
+                    Console.Write("\nDo you wish to try again? [y/n]: ");
+                    string response = Console.ReadLine();
+
+                    if (response == "n") success = true;
+                    else return;
+                }
+            }
+        }
+
         // Main Function
         static void Main()
         {
@@ -134,21 +188,10 @@ namespace inventory_manager
                 switch(selection)
                 {
                     case 1:
+                        CheckSuccess(UpdateQuantity);
                         break;
                     case 2:
-                        bool success = false;
-                        while (!success)
-                        {
-                            success = AddItem();
-                            if (!success)
-                            {
-                                Console.Write("\nDo you wish to try again? [y/n]: ");
-                                string response = Console.ReadLine();
-
-                                if (response == "n") success = true;
-                                else Console.WriteLine();
-                            }
-                        }
+                        CheckSuccess(AddItem);
                         break;
                     case 3:
                         break;
