@@ -10,6 +10,8 @@ namespace inventory_manager
     {
         // Holds Current Inventory
         private static List<Item> inventory = [];
+
+        // Holds file name for inventory storage to be read and written to
         private readonly static string filename = "inventory.txt";
 
         // Runs basic setup for the program, checks if storage file exists
@@ -21,11 +23,24 @@ namespace inventory_manager
             {
                 try
                 {
-                    File.Create(filename);
+                    FileStream fs = File.Create(filename);
+                    fs.Close();
+                    return;
                 }
                 catch
                 {
                     throw new Exception("Something went wrong. Aborting program...");
+                }
+            }
+            else
+            {
+                string data = File.ReadAllText(filename);
+                string[] lines = data.Split('\n');
+                foreach (string line in lines)
+                {
+                    if (line == "") continue;
+                    string[] values = line.Split('@');
+                    inventory.Add(new Item(values[0], values[1], int.Parse(values[2])));
                 }
             }
         }
@@ -43,9 +58,8 @@ namespace inventory_manager
             Console.WriteLine("#####----------------------------------------#####");
             Console.WriteLine("##### [1] Update Inventory Quantity          #####");
             Console.WriteLine("##### [2] Add a New Item                     #####");
-            Console.WriteLine("##### [3] Format Inventory Data Sheet        #####");
-            Console.WriteLine("##### [4] Lookup Item via Item Number        #####");
-            Console.WriteLine("##### [5] End Program                        #####");
+            Console.WriteLine("##### [3] Lookup Item via Item Number        #####");
+            Console.WriteLine("##### [4] End Program                        #####");
             Console.WriteLine("#####----------------------------------------#####");
             Console.WriteLine("##################################################");
 
@@ -56,7 +70,7 @@ namespace inventory_manager
 
                 if (int.TryParse(userInp, out int menu_val))
                 {
-                    if (menu_val > 0 && menu_val < 6) return menu_val;
+                    if (menu_val > 0 && menu_val < 5) return menu_val;
                     else {
                         Console.WriteLine(userInp + " is not a valid menu option.\n");
                     }
@@ -138,6 +152,29 @@ namespace inventory_manager
             return true;
         }
 
+        private static bool LookupItem()
+        {
+            string number;
+            Console.Write("Enter Item ID Number: ");
+            number = Console.ReadLine();
+
+            foreach (Item item in inventory)
+            {
+                if (item.PartNum == number)
+                {
+                    Console.WriteLine("Item ID: " + item.PartNum);
+                    Console.WriteLine("Description: " + item.Description);
+                    Console.WriteLine("Quantity: " + item.Qty);
+                    Console.WriteLine("\nPress Enter to continue...");
+                    Console.ReadLine();
+                    return true;
+                }
+            }
+
+            Console.WriteLine("Item not found!");
+            return false;
+        }
+
         private static void CheckSuccess(Func<bool> func)
         {
             bool success = false;
@@ -150,7 +187,7 @@ namespace inventory_manager
                     string response = Console.ReadLine();
 
                     if (response == "n") success = true;
-                    else return;
+                    else Console.WriteLine();
                 }
             }
         }
@@ -181,7 +218,7 @@ namespace inventory_manager
             // clear console for menu operations
             Console.Clear();
 
-            while (selection != 5)
+            while (selection != 4)
             {
                 selection = Menu();
                 Console.Clear();
@@ -194,13 +231,16 @@ namespace inventory_manager
                         CheckSuccess(AddItem);
                         break;
                     case 3:
+                        CheckSuccess(LookupItem);
                         break;
                     case 4:
-                        break;
-                    case 5:
+                        using (FileStream fs = File.Open(filename, FileMode.Truncate))
+                        {
+                            fs.Close();
+                        }
                         foreach (Item item in inventory)
                         {
-                            File.WriteAllText(filename, $"{item.PartNum} {item.Description} {item.Qty}");
+                            File.AppendAllText(filename, $"{item.PartNum}@{item.Description}@{item.Qty}\n");
                         }
                         Console.WriteLine("Program aborted.");
                         break;
